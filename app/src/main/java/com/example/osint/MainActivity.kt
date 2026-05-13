@@ -38,6 +38,7 @@ import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -46,7 +47,6 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
-                        @OptIn(ExperimentalMaterial3Api::class)
                         CenterAlignedTopAppBar(
                             title = { Text("PowerOSINT Pro", fontWeight = FontWeight.ExtraBold) },
                             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -114,6 +114,10 @@ fun OSINTScannerApp(modifier: Modifier = Modifier) {
 
         Button(
             onClick = {
+                if (targetName.isBlank() && email.isBlank() && phone.isBlank() && username.isBlank()) {
+                    Toast.makeText(context, "Please enter details to scan", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                     permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
                 }
@@ -131,7 +135,7 @@ fun OSINTScannerApp(modifier: Modifier = Modifier) {
             shape = RoundedCornerShape(8.dp)
         ) {
             if (isSearching) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White, strokeWidth = 2.dp)
                 Spacer(Modifier.width(10.dp))
                 Text(currentStep)
             } else {
